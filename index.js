@@ -11,13 +11,13 @@ const { RNVoipCall } = NativeModules;
 
 // ---- FIX: Prevent crash on iOS ----
 let VoipEventEmitter = null;
+
+// Only initialize the event emitter if the native module exists (especially for iOS)
 if (Platform.OS === 'ios' && RNVoipCall) {
   VoipEventEmitter = new NativeEventEmitter(RNVoipCall);
-} else if (Platform.OS === 'android') {
-  VoipEventEmitter = new NativeEventEmitter();
 }
 
-// Export modules
+// Export modules safely
 export const RNVoipPushKit = RNVoipPushKitNativeModule;
 
 export default {
