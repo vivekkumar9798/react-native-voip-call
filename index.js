@@ -4,17 +4,19 @@ import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 // Import native modules
 import RNVoipPushKitNativeModule from './lib/iosPushKit';
-import RNVoipCallNativeModule from './lib/RNVoipCall';
+import RNVoipCallNativeModule from './lib/RNVoipCall'; // Only exists if Android has it
 
-// Extract native call module
 const { RNVoipCall } = NativeModules;
 
-// ---- FIX: Prevent crash on iOS ----
+// ✅ Safe emitter (no crash even if module missing)
 let VoipEventEmitter = null;
 
-// Only initialize the event emitter if the native module exists (especially for iOS)
 if (Platform.OS === 'ios' && RNVoipCall) {
   VoipEventEmitter = new NativeEventEmitter(RNVoipCall);
+} else {
+  console.warn(
+    `⚠️ RNVoipCall native module not found on ${Platform.OS}. EventEmitter disabled.`
+  );
 }
 
 // Export modules safely
